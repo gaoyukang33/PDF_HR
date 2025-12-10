@@ -2,6 +2,6 @@
 
 .vs/
 __pycache__/
-output/
+output*/
 .vscode/
 wandb/

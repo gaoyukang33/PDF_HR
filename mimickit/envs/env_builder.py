@@ -15,6 +15,10 @@ def build_env(env_file, num_envs, device, visualize):
     elif (env_name == "deepmimic"):
         import envs.deepmimic_env as deepmimic_env
         env = deepmimic_env.DeepMimicEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "deepmimic_nrdf"):
+        import envs.deepmimic_env_nrdf as deepmimic_env_nrdf
+        env = deepmimic_env_nrdf.DeepMimicEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    
     elif (env_name == "amp"):
         import envs.amp_env as amp_env
         env = amp_env.AMPEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
