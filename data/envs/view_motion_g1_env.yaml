@@ -1,0 +1,24 @@
+env_name: "view_motion"
+
+env:
+    char_file: "data/assets/g1/g1.xml"
+    camera_mode: "track"
+
+    episode_length: 20.0 # seconds
+    global_obs: False
+    root_height_obs: True
+    
+    key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link","left_wrist_yaw_link", "right_wrist_yaw_link"]
+
+    motion_file: "data/motions/g1/g1_walk.pkl"
+
+
+engine:
+    engine_name: "isaac_gym"
+    
+    control_mode: "none"
+    control_freq: 30
+    sim_freq: 30
+    env_spacing: 5
+    
+    ground_contact_height: 0.3

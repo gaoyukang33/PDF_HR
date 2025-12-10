@@ -1,0 +1,7 @@
+*.pyc
+
+.vs/
+__pycache__/
+output/
+.vscode/
+wandb/

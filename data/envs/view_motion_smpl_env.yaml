@@ -1,0 +1,24 @@
+env_name: "view_motion"
+
+env:
+    char_file: "data/assets/smpl/smpl.xml"
+    camera_mode: "track"
+
+    episode_length: 20.0 # seconds
+    global_obs: False
+    root_height_obs: True
+    
+    key_bodies: ["L_Toe", "R_Toe", "Head", "L_Hand", "R_Hand"]
+
+    motion_file: "data/motions/smpl/smpl_spinkick.pkl"
+
+
+engine:
+    engine_name: "isaac_gym"
+    
+    control_mode: "none"
+    control_freq: 30
+    sim_freq: 30
+    env_spacing: 5
+    
+    ground_contact_height: 0.3
