@@ -1,7 +1,7 @@
 --num_envs 4096
 
 --env_config data/envs_add_nrdf/add_g1_env_backflip.yaml
---agent_config data/agents/add_g1_agent_nrdf.yaml
+--agent_config data/agents_nrdf/add_g1_agent.yaml
 
 --log_file output_add_backflip_nrdf/log.txt
 --out_model_file output_add_backflip_nrdf/model.pt

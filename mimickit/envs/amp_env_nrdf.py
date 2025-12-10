@@ -296,7 +296,8 @@ class AMPEnv(deepmimic_env_nrdf.DeepMimicEnv):
         return
 
     def _update_reward(self):
-        if self.use_nrdf_reward:
+        enable_nrdf_reward = (self._mode == base_env.EnvMode.TRAIN) and self.use_nrdf_reward
+        if enable_nrdf_reward:
             char_id = self._get_char_id()
             dof_pos = self._engine.get_dof_pos(char_id)
             assert(self._reward_nrdf_mode == "static"), "AMP only support static nrdf rewards"

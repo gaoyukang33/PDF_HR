@@ -1,10 +1,11 @@
 import torch
 
-import envs.amp_env as amp_env
-import envs.deepmimic_env as deepmimic_env
+import envs.amp_env_nrdf as amp_env_nrdf
+import envs.deepmimic_env_nrdf as deepmimic_env_nrdf
+import envs.base_env as base_env
 import util.torch_util as torch_util
 
-class ADDEnv(amp_env.AMPEnv):
+class ADDEnv(amp_env_nrdf.AMPEnv):
     def __init__(self, config, num_envs, device, visualize):
         super().__init__(config=config, num_envs=num_envs, device=device,
                          visualize=visualize)
@@ -27,7 +28,7 @@ class ADDEnv(amp_env.AMPEnv):
         return
     
     def _update_ref_motion(self):
-        deepmimic_env.DeepMimicEnv._update_ref_motion(self)
+        deepmimic_env_nrdf.DeepMimicEnv._update_ref_motion(self)
         return
     
     def _update_disc_obs(self, env_ids=None):
@@ -94,8 +95,35 @@ class ADDEnv(amp_env.AMPEnv):
         return disc_obs
     
     def _update_done(self):
-        deepmimic_env.DeepMimicEnv._update_done(self)
+        deepmimic_env_nrdf.DeepMimicEnv._update_done(self)
         return
+    
+    def _update_reward(self):
+        enable_nrdf_reward = (self._mode == base_env.EnvMode.TRAIN) and self.use_nrdf_reward
+        if enable_nrdf_reward:
+            char_id = self._get_char_id()
+            dof_pos = self._engine.get_dof_pos(char_id)
+
+            if self._reward_nrdf_mode == "static":
+                d_good = min(0.395, self.nrdf_max_ref_motion_dist + self._reward_nrdf_tolerance)  # make sure d_good < d_bad
+            elif self._reward_nrdf_mode == "dynamic":
+                ref_dof_pos = self._kin_char_model.rot_to_dof(self._ref_joint_rot)
+                ref_nrdf = self.nrdf_model(ref_dof_pos).view(-1)
+                d_good = ref_nrdf + self._reward_nrdf_tolerance
+                d_good = torch.clamp(d_good, 0, 0.395)  # # make sure d_good < d_bad
+            else:
+                assert(False), "Wrong nrdf reward mode."
+
+            with torch.no_grad():
+                nrdf_pred = self.nrdf_model(dof_pos).view(-1)
+    
+            d_bad = 0.4
+            s_d = (nrdf_pred - d_good) / (d_bad - d_good)
+            s_d = torch.clamp(s_d, 0, 1)
+            nrdf_dist_r = self._reward_nrdf_dist_w * torch.exp(-self._reward_nrdf_dist_scale * s_d) 
+            self._nrdf_reward_buf[:] = nrdf_dist_r
+        return
+
 
 @torch.jit.script
 def compute_pos_obs(root_pos, root_rot, joint_rot, body_pos, global_obs):

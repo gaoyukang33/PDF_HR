@@ -1,13 +1,13 @@
 import numpy as np
 import torch
 
-import learning.amp_agent as amp_agent
+import learning.amp_agent_nrdf as amp_agent_nrdf
 import learning.add_model as add_model
 import util.torch_util as torch_util
 import learning.diff_normalizer as diff_normalizer
 
-class ADDAgent(amp_agent.AMPAgent):
-    NAME = "ADD"
+class ADDAgent(amp_agent_nrdf.AMPAgent):
+    NAME = "ADD_NRDF"
 
     def __init__(self, config, env, device):
         super().__init__(config, env, device)
@@ -27,7 +27,7 @@ class ADDAgent(amp_agent.AMPAgent):
         return pos_diff
     
     def _build_normalizers(self):
-        super(amp_agent.AMPAgent, self)._build_normalizers()
+        super(amp_agent_nrdf.AMPAgent, self)._build_normalizers()
 
         disc_obs_space = self._env.get_disc_obs_space()
         disc_obs_dtype = torch_util.numpy_dtype_to_torch(disc_obs_space.dtype)
@@ -35,17 +35,20 @@ class ADDAgent(amp_agent.AMPAgent):
         return
     
     def _record_data_post_step(self, next_obs, r, done, next_info):
-        super(amp_agent.AMPAgent, self)._record_data_post_step(next_obs, r, done, next_info)
+        super(amp_agent_nrdf.AMPAgent, self)._record_data_post_step(next_obs, r, done, next_info)
 
         disc_obs = next_info["disc_obs"]
         disc_obs_demo = next_info["disc_obs_demo"]
         self._exp_buffer.record("disc_obs_demo", disc_obs_demo)
         self._exp_buffer.record("disc_obs", disc_obs)
+
+        if self._env.use_nrdf_reward:
+            self._exp_buffer.record("nrdf_reward", self._env._nrdf_reward_buf)
         return
     
     def _build_train_data(self):
         reward_info = self._compute_rewards()
-        info = super(amp_agent.AMPAgent, self)._build_train_data()
+        info = super(amp_agent_nrdf.AMPAgent, self)._build_train_data()
         info = {**info, **reward_info}
         return info
     
@@ -61,7 +64,6 @@ class ADDAgent(amp_agent.AMPAgent):
         disc_r = self._calc_disc_rewards(norm_obs_diff)
 
         r = self._task_reward_weight * task_r + self._disc_reward_weight * disc_r
-        self._exp_buffer.set_data_flat("reward", r)
         
         if (self._need_normalizer_update()):
             self._disc_obs_norm.record(obs_diff)
@@ -71,6 +73,15 @@ class ADDAgent(amp_agent.AMPAgent):
             "disc_reward_mean": disc_reward_mean,
             "disc_reward_std": disc_reward_std
         }
+
+        if self._env.use_nrdf_reward:
+            nrdf_dist_r = self._exp_buffer.get_data_flat("nrdf_reward")
+            nrdf_dist_reward_std, nrdf_dist_reward_mean = torch.std_mean(nrdf_dist_r)
+            r = r + nrdf_dist_r
+            info['nrdf_dist_reward_mean']: nrdf_dist_reward_mean
+            info['nrdf_dist_reward_std']: nrdf_dist_reward_std
+            
+        self._exp_buffer.set_data_flat("reward", r)
         return info
     
     def _compute_disc_loss(self, batch):
