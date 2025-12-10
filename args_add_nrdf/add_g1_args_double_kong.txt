@@ -1,0 +1,8 @@
+--num_envs 4096
+
+--env_config data/envs_add_nrdf/add_g1_env_double_kong.yaml
+--agent_config data/agents_nrdf/add_g1_agent.yaml
+
+--log_file output_add_double_kong_nrdf/log.txt
+--out_model_file output_add_double_kong_nrdf/model.pt
+--int_output_dir output_add_double_kong_nrdf/int_output_dir

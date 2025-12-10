@@ -1,4 +1,4 @@
-env_name: "deepmimic_nrdf"
+env_name: "static_objects_nrdf"
 
 env:
     char_file: "data/assets/g1/g1.xml"
@@ -8,7 +8,7 @@ env:
     global_obs: True
     root_height_obs: True
     pose_termination: True
-    pose_termination_dist: 1.0 # m
+    pose_termination_dist: 0.5 # m
     enable_phase_obs: False
     enable_tar_obs: True
     num_phase_encoding: 4
@@ -29,18 +29,19 @@ env:
     use_nrdf_early_termination: False
     nrdf_et_threshold: 0.4
 
-    ref_char_offset: [2.0, 0.0, 0.0] # m
+    ref_char_offset: [0.0, 2.0, 0.0] # m
     init_pose: [0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0]
 
     enable_early_termination: True
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
-    contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link"]
-    #contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link", "left_elbow_link", "left_wrist_roll_link", "left_wrist_pitch_link", "left_wrist_yaw_link", "right_elbow_link", "right_wrist_roll_link", "right_wrist_pitch_link", "right_wrist_yaw_link"] # cartwheel
-
-    motion_file: "data/motions/g1/g1_backflip.pkl"
-
-    joint_err_w: [1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5]
- 
+    contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link", "left_elbow_link", "left_wrist_roll_link", "left_wrist_pitch_link", "left_wrist_yaw_link", "right_elbow_link", "right_wrist_roll_link", "right_wrist_pitch_link", "right_wrist_yaw_link"]
+    
+    motion_file: "data/motions/g1/g1_double_kong.pkl"
+    objects: [{"pos":[-6.53, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}, {"pos":[-7.62, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}]
+    
+    #motion_file: "data/motions/g1/g1_speed_vault.pkl"
+    #objects: [{"pos":[1.7, 0.5, 0.055], "file":"data/assets/objects/vault_box.xml"}]
+    
     reward_pose_w: 0.5
     reward_vel_w: 0.1
     reward_root_pose_w: 0.15

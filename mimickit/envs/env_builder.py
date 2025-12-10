@@ -42,12 +42,27 @@ def build_env(env_file, num_envs, device, visualize):
     elif (env_name == "task_location"):
         import envs.task_location_env as task_location_env
         env = task_location_env.TaskLocationEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "task_location_nrdf"):
+        import envs.task_location_env_nrdf as task_location_env_nrdf
+        env = task_location_env_nrdf.TaskLocationEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
     elif (env_name == "task_steering"):
         import envs.task_steering_env as task_steering_env
         env = task_steering_env.TaskSteeringEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "task_steering_nrdf"):
+        import envs.task_steering_env_nrdf as task_steering_env_nrdf
+        env = task_steering_env_nrdf.TaskSteeringEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
     elif (env_name == "static_objects"):
         import envs.static_objects_env as static_objects_env
         env = static_objects_env.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "static_objects_nrdf"):
+        import envs.static_objects_env_nrdf as static_objects_env_nrdf
+        env = static_objects_env_nrdf.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "static_objects_add"):
+        import envs.static_objects_add_env as static_objects_add_env
+        env = static_objects_add_env.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif (env_name == "static_objects_add_nrdf"):
+        import envs.static_objects_add_env_nrdf as static_objects_add_env_nrdf
+        env = static_objects_add_env_nrdf.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize) 
     else:
         assert(False), "Unsupported env: {}".format(env_name)
 
