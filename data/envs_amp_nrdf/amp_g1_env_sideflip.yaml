@@ -1,4 +1,4 @@
-env_name: "amp"
+env_name: "amp_nrdf"
 
 env:
     char_file: "data/assets/g1/g1.xml"
@@ -13,6 +13,18 @@ env:
     num_disc_obs_steps: 10
     rand_reset: True
     zero_center_action: True
+    log_tracking_error: True
+
+    use_nrdf_reward: True
+    reward_nrdf_dist_w: 0.2
+    reward_nrdf_dist_scale: 1.0
+    reward_nrdf_mode: "static"  # static only
+    reward_nrdf_tolerance: 0.05
+
+    nrdf_model_path: "prior_ckpts/nrdf_epoch_70.pt"
+
+    use_nrdf_early_termination: False
+    nrdf_et_threshold: 0.4
 
     ref_char_offset: [2.0, 0.0, 0.0] # m
     init_pose: [0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0]
@@ -22,7 +34,7 @@ env:
     contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link"]
     #contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link", "left_elbow_link", "left_wrist_roll_link", "left_wrist_pitch_link", "left_wrist_yaw_link", "right_elbow_link", "right_wrist_roll_link", "right_wrist_pitch_link", "right_wrist_yaw_link"] # cartwheel
     
-    motion_file: "data/motions/g1/g1_walk.pkl"
+    motion_file: "data/motions/g1/g1_sideflip.pkl"
 
     reward_pose_w: 0.5
     reward_vel_w: 0.1

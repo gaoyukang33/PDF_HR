@@ -15,17 +15,18 @@ env:
     tar_obs_steps: [1, 2, 3]
     rand_reset: True
     zero_center_action: True
-    log_tracking_error: False
+    log_tracking_error: True
 
     
     use_nrdf_reward: True
     reward_nrdf_dist_w: 0.2
     reward_nrdf_dist_scale: 1.0
-    reward_nrdf_mode: "static"  # static or dynamic
+    reward_nrdf_mode: "dynamic"  # static or dynamic
+    reward_nrdf_tolerance: 0.05
 
     nrdf_model_path: "prior_ckpts/nrdf_epoch_70.pt"
 
-    use_nrdf_early_termination: False
+    use_nrdf_early_termination: True
     nrdf_et_threshold: 0.4
 
     ref_char_offset: [2.0, 0.0, 0.0] # m

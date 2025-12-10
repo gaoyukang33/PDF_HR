@@ -497,13 +497,21 @@ class DeepMimicEnv(char_env.CharEnv):
             # print('enable_nrdf_reward')
             with torch.no_grad():
                 nrdf_pred = self.nrdf_model(dof_pos).view(-1)
+                if self._reward_nrdf_mode == "static":
+                    d_good = min(0.395, self.nrdf_max_ref_motion_dist + self._reward_nrdf_tolerance)  # make sure d_good < d_bad
+                elif self._reward_nrdf_mode == "dynamic":
+                    ref_dof_pos = self._kin_char_model.rot_to_dof(self._ref_joint_rot)
+                    ref_nrdf = self.nrdf_model(ref_dof_pos).view(-1)
+                    d_good = ref_nrdf + self._reward_nrdf_tolerance
+                    d_good = torch.clamp(d_good, 0, 0.395)  # # make sure d_good < d_bad
+                else:
+                    assert(False), "Wrong nrdf reward mode."
 
-            d_good = min(0.395, self.nrdf_max_ref_motion_dist)  # make sure d_good < d_bad
             d_bad = 0.4
-
+            
             s_d = (nrdf_pred - d_good) / (d_bad - d_good)
             s_d = torch.clamp(s_d, 0, 1)
-            nrdf_dist_r = self._reward_nrdf_dist_w * torch.exp(-self._reward_nrdf_dist_scale * s_d)   # [0, 1]
+            nrdf_dist_r = self._reward_nrdf_dist_w * torch.exp(-self._reward_nrdf_dist_scale * s_d)
             self._reward_buf[:] += nrdf_dist_r
         return
 
@@ -519,6 +527,18 @@ class DeepMimicEnv(char_env.CharEnv):
         root_rot = self._engine.get_root_rot(char_id)
         body_pos = self._engine.get_body_pos(char_id)
         ground_contact_forces = self._engine.get_ground_contact_forces(char_id)
+
+        dof_nrdf_overflow = torch.zeros_like(body_pos)
+        enable_nrdf_termination = (self._mode == base_env.EnvMode.TRAIN) and self.use_nrdf_early_termination
+        if enable_nrdf_termination:
+            dof_pos = self._engine.get_dof_pos(char_id)
+
+            with torch.no_grad():
+                nrdf_pred = self.nrdf_model(dof_pos).view(-1)
+
+            dof_nrdf_overflow = nrdf_pred - self.nrdf_et_threshold  # Easy ET
+            self.nrdf_et_counter += (dof_nrdf_overflow > 0).to(torch.int32).sum()
+            print("nrdf triggered: ", self.nrdf_et_counter)
 
         self._done_buf[:] = compute_done(done_buf=self._done_buf,
                                          time=self._time_buf, 
@@ -536,7 +556,10 @@ class DeepMimicEnv(char_env.CharEnv):
                                          motion_times=motion_times,
                                          motion_len=motion_len,
                                          motion_len_term=motion_len_term,
-                                         track_root=track_root)
+                                         track_root=track_root,
+                                         dof_nrdf_overflow=dof_nrdf_overflow,
+                                         enable_nrdf_termination=enable_nrdf_termination
+                                         )
         return
 
     def _update_info(self, env_ids=None):
@@ -783,8 +806,11 @@ def compute_done(done_buf, time, ep_len, root_rot, body_pos, tar_root_rot, tar_b
                  pose_termination, pose_termination_dist, 
                  global_obs, enable_early_termination,
                  motion_times, motion_len, motion_len_term,
-                 track_root):
-    # type: (Tensor, Tensor, float, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, bool, float, bool, bool, Tensor, Tensor, Tensor, bool) -> Tensor
+                 track_root,
+                 dof_nrdf_overflow,
+                 enable_nrdf_termination
+                 ):
+    # type: (Tensor, Tensor, float, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, bool, float, bool, bool, Tensor, Tensor, Tensor, bool, Tensor, bool) -> Tensor
     done = torch.full_like(done_buf, base_env.DoneFlags.NULL.value)
     
     timeout = time >= ep_len
@@ -832,6 +858,9 @@ def compute_done(done_buf, time, ep_len, root_rot, body_pos, tar_root_rot, tar_b
                 pose_fail = torch.logical_or(pose_fail, root_pos_fail)
 
             failed = torch.logical_or(failed, pose_fail)
+            
+        if enable_nrdf_termination:
+            failed = torch.logical_or(failed, dof_nrdf_overflow > 0.)
             
         # only fail after first timestep
         not_first_step = (time > 0.0)
