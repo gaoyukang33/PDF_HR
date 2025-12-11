@@ -10,21 +10,6 @@ mimickit_outputdir = '/media/bic/8258436c-e92f-4217-a894-82b40470b374/Grain/grai
 
 
 
-# debug
-# with open('data/motions/g1/g1_run.pkl', "rb") as filestream:
-# with open('data/motions/humanoid/long/humanoid_long_walk0_mirror.pkl', "rb") as filestream:
-#     in_dict = pickle.load(filestream)
-#     print(in_dict.keys())
-#     print(len(in_dict['frames']))
-#     print(len(in_dict['frames'][0]))
-#     print(in_dict['loop_mode'])
-#     print(in_dict['fps'])
-
-# humanoid_files = [f for f in os.listdir('data/motions/humanoid/long') if f.endswith('.pkl')]
-# for file_name in humanoid_files:
-#     with open(os.path.join('data/motions/humanoid/long', file_name), "rb") as filestream:
-#         in_dict = pickle.load(filestream)
-#         print(file_name, len(in_dict['frames'][0]), in_dict['loop_mode'], in_dict['fps'], type(in_dict['frames'][0][0]))
 
 if not os.path.exists(mimickit_outputdir):
         print('no output dir')
