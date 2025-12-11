@@ -62,7 +62,10 @@ def build_env(env_file, num_envs, device, visualize):
         env = static_objects_add_env.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
     elif (env_name == "static_objects_add_nrdf"):
         import envs.static_objects_add_env_nrdf as static_objects_add_env_nrdf
-        env = static_objects_add_env_nrdf.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize) 
+        env = static_objects_add_env_nrdf.StaticObjectsEnv(config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif ('record' in env_name):
+        import envs.record_env as record_env
+        env = record_env.RecordEnvBuilder(env_name, config=env_config, num_envs=num_envs, device=device, visualize=visualize)
     else:
         assert(False), "Unsupported env: {}".format(env_name)
 

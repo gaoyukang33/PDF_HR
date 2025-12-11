@@ -1,0 +1,19 @@
+motions:
+  - file: "data/motions/lafan_g1/run1_subject2.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/run1_subject5.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/run2_subject1.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/run2_subject4.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/sprint1_subject2.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/sprint1_subject4.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/walk1_subject2.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/walk1_subject5.pkl"
+    weight: 1.0
+  - file: "data/motions/lafan_g1/walk3_subject2.pkl"
+    weight: 1.0

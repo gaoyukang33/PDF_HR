@@ -1,0 +1,8 @@
+--num_envs 4096
+
+--env_config data/envs_amp/amp_g1_vault_env.yaml
+--agent_config data/agents/amp_g1_agent.yaml
+
+--log_file output_amp_vault_1/log.txt
+--out_model_file output_amp_vault_1/model.pt
+--int_output_dir output_amp_vault_1/int_output_dir

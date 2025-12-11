@@ -5,3 +5,7 @@ __pycache__/
 output*/
 .vscode/
 wandb/
+
+output*/
+model.pt
+experiments/

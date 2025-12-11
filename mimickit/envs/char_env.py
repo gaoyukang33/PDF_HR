@@ -76,6 +76,7 @@ class CharEnv(sim_env.SimEnv):
     
     def _build_env(self, env_id, config):
         char_col = self._get_char_color()
+        char_col = None     # set to None to use default color
         char_id = self._build_character(env_id, config, color=char_col)
 
         if (env_id == 0):

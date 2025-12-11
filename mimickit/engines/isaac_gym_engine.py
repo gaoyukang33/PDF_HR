@@ -182,6 +182,8 @@ class IsaacGymEngine(engine.Engine):
             num_bodies = self.get_obj_num_bodies(obj_id)
             for b in range(num_bodies):
                 self.set_body_color(env_id, obj_id, b, color)
+        else:
+            self._apply_mjcf_colors(asset_file, env_id, obj_id)
 
         self._obj_types[env_id].append(obj_type)
 
@@ -874,3 +876,44 @@ class IsaacGymEngine(engine.Engine):
 
         torque = self._kp_raw * (tar_dof - dof_pos) - self._kd_raw * dof_vel
         return torque
+
+
+    def _apply_mjcf_colors(self, asset_file, env_id, obj_id):
+        import xml.etree.ElementTree as ET
+        tree = ET.parse(asset_file)
+        root = tree.getroot()
+
+        worldbody = root.find("worldbody")
+        if worldbody is None:
+            raise RuntimeError("MJCF: missing <worldbody>")
+
+        body_colors = {}  # name -> [r, g, b]
+        def parse_body(node):
+            body_name = node.get("name")
+            chosen_rgb = None
+            for geom in node.findall("geom"):
+                gtype = geom.get("type", "")
+                rgba = geom.get("rgba")
+                if gtype == "mesh" and rgba is not None:
+                    parts = rgba.strip().split()
+                    if len(parts) >= 3:
+                        r, g, b = float(parts[0]), float(parts[1]), float(parts[2])
+                        chosen_rgb = [r, g, b]
+                        break
+            if body_name and chosen_rgb is not None:
+                body_colors[body_name] = chosen_rgb
+
+            for child in node.findall("body"):
+                parse_body(child)
+
+        for body in worldbody.findall("body"):
+            parse_body(body)
+
+        env_ptr = self.get_env(env_id)
+        rb_names = self._gym.get_actor_rigid_body_names(env_ptr, obj_id)
+        for rb_id, rb_name in enumerate(rb_names):
+            if rb_name in body_colors:
+                rgb = body_colors[rb_name]
+                self._gym.set_rigid_body_color(env_ptr, obj_id, rb_id, gymapi.MESH_VISUAL,
+                                                gymapi.Vec3(rgb[0], rgb[1], rgb[2]))
+        return
