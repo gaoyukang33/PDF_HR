@@ -13,6 +13,7 @@ class StaticObjectsEnv(amp_env.AMPEnv):
         return
     
     def _build_static_object(self, env_id, config):
+        color = np.array([0.3, 0.3, 0.3])
         objs_config = config["env"]["objects"]
 
         for i, obj_config in enumerate(objs_config):
@@ -30,5 +31,6 @@ class StaticObjectsEnv(amp_env.AMPEnv):
                                     name=obj_name,
                                     start_pos=pos,
                                     start_rot=rot,
-                                    fix_root=True)
+                                    fix_root=True,
+                                    color=color)
         return
