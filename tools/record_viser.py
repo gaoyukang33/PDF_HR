@@ -29,8 +29,8 @@ def main():
     )
 
     robot_motion_file_list = [
-        "/media/bic/8258436c-e92f-4217-a894-82b40470b374/Grain/grain/Yangchen/Mimickit_raw/data/motions/g1/g1_backflip.pkl",
-        "/media/bic/8258436c-e92f-4217-a894-82b40470b374/Grain/grain/Yangchen/Mimickit_raw/data/motions/g1/g1_cartwheel.pkl",
+        "data/motions/g1/g1_backflip.pkl",
+        "data/motions/g1/g1_cartwheel.pkl",
         ]
     color_list = [
         (0.3, 0.8, 0.3),
