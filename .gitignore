@@ -6,6 +6,6 @@ output*/
 .vscode/
 wandb/
 
-output*/
+record*/
 model.pt
 experiments/
