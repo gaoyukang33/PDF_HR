@@ -9,6 +9,9 @@ import envs.task_steering_env as task_steering_env
 
 from envs.char_env import CameraMode
 import engines.engine as engine
+import util.torch_util as torch_util
+from scipy.spatial.transform import Rotation as R
+import pickle
 
 import os
 import numpy as np
@@ -41,6 +44,19 @@ class RecordMixin:
         self.light_ambient = gymapi.Vec3(*self.record_cfg.get('light_ambient', [0.4, 0.4, 0.4]))
         self.light_direction = gymapi.Vec3(0.1, -0.1, 0.5)
         self.bg_objects = self.record_cfg.get('bg_objects', [])
+        self.record_motion_pkl = self.record_cfg.get('record_motion_pkl', False)
+        self.record_motion_img = self.record_cfg.get('record_motion_img', False)
+
+        self.record_motion_ref_data = {
+            'loop_mode': 0,
+            'fps': kwargs.get('config', {}).get('engine', {}).get("control_freq", 30),
+            'frames': []
+        }
+        self.record_motion_char_data = {
+            'loop_mode': 0,
+            'fps': kwargs.get('config', {}).get('engine', {}).get("control_freq", 30),
+            'frames': []
+        }
 
         super().__init__(*args, **kwargs)
 
@@ -140,16 +156,17 @@ class RecordMixin:
             self.record_cam_target_ref,
         )
         self._engine._gym.render_all_camera_sensors(self._engine._sim)
-        self._engine._gym.write_camera_image_to_file(self._engine._sim,
-                                                    self._engine.get_env(0),
-                                                    self._engine.record_camera_char_handle,
-                                                    gymapi.IMAGE_COLOR,
-                                                    frame_filename_char)
-        self._engine._gym.write_camera_image_to_file(self._engine._sim,
-                                                    self._engine.get_env(0),
-                                                    self._engine.record_camera_ref_handle,
-                                                    gymapi.IMAGE_COLOR,
-                                                    frame_filename_ref)
+        if self.record_motion_img:
+            self._engine._gym.write_camera_image_to_file(self._engine._sim,
+                                                        self._engine.get_env(0),
+                                                        self._engine.record_camera_char_handle,
+                                                        gymapi.IMAGE_COLOR,
+                                                        frame_filename_char)
+            self._engine._gym.write_camera_image_to_file(self._engine._sim,
+                                                        self._engine.get_env(0),
+                                                        self._engine.record_camera_ref_handle,
+                                                        gymapi.IMAGE_COLOR,
+                                                        frame_filename_ref)
         self.frame_id += 1
 
         return
@@ -180,6 +197,55 @@ class RecordMixin:
                                     fix_root=True,
                                     color=color)
         return
+
+
+    def step(self, action):
+        self._pre_physics_step(action)
+
+        self._physics_step()
+        
+        # compute observations, rewards, resets, ...
+        self._post_physics_step()
+
+        if (self._visualize):
+            self._render()
+        
+        if self.record_motion_pkl:
+            self.record_motion_ref_data['frames'].append(self._get_ref_motion_data(0))
+            self.record_motion_char_data['frames'].append(self._get_char_motion_data(0))
+
+            if self._done_buf[0] != 0:
+                print('recording motion pkl')
+                record_motion_ref_path = os.path.join(self.record_frame_path, "ref.pkl")
+                record_motion_char_path = os.path.join(self.record_frame_path, "char.pkl")
+                print(record_motion_ref_path, record_motion_char_path)
+                with open(record_motion_ref_path, "wb") as f:
+                    pickle.dump(self.record_motion_ref_data, f)
+                with open(record_motion_char_path, "wb") as f:
+                    pickle.dump(self.record_motion_char_data, f)
+
+        return self._obs_buf, self._reward_buf, self._done_buf, self._info
+
+    def _enable_ref_char(self):
+        return True
+
+    def _get_ref_motion_data(self, env_id):
+        # ref_id = self._get_ref_char_id()
+        root_pos = self._ref_root_pos[env_id].cpu().numpy()
+        root_quat = self._ref_root_rot[env_id].cpu().numpy()    # xyzw
+        root_rotvec = R.from_quat(root_quat).as_rotvec()
+        dof_pos = self._ref_dof_pos[env_id].cpu().numpy()
+
+        return np.concatenate([root_pos, root_rotvec, dof_pos], axis=0)
+
+    def _get_char_motion_data(self, env_id):
+        char_id = self._get_char_id()
+        root_pos = self._engine._root_pos[env_id, char_id, :].cpu().numpy()
+        root_quat = self._engine._root_rot[env_id, char_id, :].cpu().numpy()    # xyzw
+        root_rotvec = R.from_quat(root_quat).as_rotvec()
+        dof_pos = self._engine._obj_dof_pos[char_id][env_id, :].cpu().numpy()
+
+        return np.concatenate([root_pos, root_rotvec, dof_pos], axis=0)
 
 
 # dynamic Env builder for record envs

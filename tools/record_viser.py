@@ -28,10 +28,15 @@ def main():
         mesh_dir="/media/bic/77223f40-ef66-482e-aa9e-ad9ea5a67660/LAFAN1_Retargeting_Dataset/robot_description/g1/meshes",
     )
 
+    # robot_motion_file_list = [
+    #     "data/motions/g1/g1_backflip.pkl",
+    #     "data/motions/g1/g1_cartwheel.pkl",
+    #     ]
     robot_motion_file_list = [
-        "data/motions/g1/g1_backflip.pkl",
-        "data/motions/g1/g1_cartwheel.pkl",
+        "record_engine/test/ref.pkl",
+        "record_engine/test/char.pkl",
         ]
+
     color_list = [
         (0.3, 0.8, 0.3),
         None,

@@ -7,8 +7,7 @@ env:
     episode_length: 10.0 # seconds
     global_obs: True
     root_height_obs: True
-    pose_termination: True
-    pose_termination_dist: 1.0 # m
+    pose_termination: False
     enable_phase_obs: False
     enable_tar_obs: True
     num_phase_encoding: 4
@@ -22,11 +21,9 @@ env:
 
     enable_early_termination: True
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
-    contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link"]
-    # contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link", "left_elbow_link", "left_wrist_roll_link", "left_wrist_pitch_link", "left_wrist_yaw_link", "right_elbow_link", "right_wrist_roll_link", "right_wrist_pitch_link", "right_wrist_yaw_link"] # cartwheel
-    # contact_bodies: []
+    contact_bodies: []
 
-    motion_file: "data/motions/g1/g1_sideflip.pkl"
+    motion_file: "data/motions/g1/g1_walk.pkl"
 
     joint_err_w: [1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5]
  
@@ -52,7 +49,8 @@ env:
         light_ambient : [0.8, 0.8, 0.8]
         bg_objects: [{"pos":[-200.0, 0.0, 50.0], "file":"data/assets/objects/bg_box.xml"},
                      {"pos":[0.0, 200.0, 50.0], "file":"data/assets/objects/bg_box.xml"}]
-        
+        record_motion_pkl: True
+        record_motion_img: False
 
 
 engine:

@@ -41,7 +41,7 @@ for file_name in lafan_csv_files:
     root_r_rotvec = Rotation.from_quat(root_q).as_rotvec()
     mimickit_data = np.concatenate([root_t, root_r_rotvec, pose], axis=-1)
 
-    out_dict = {'loop_mode': 0, 'fps': 120, 'frames': mimickit_data}
+    out_dict = {'loop_mode': 0, 'fps': 30, 'frames': mimickit_data}
 
     with open(dest_path, "wb") as f:
         pickle.dump(out_dict, f)
