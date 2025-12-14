@@ -20,6 +20,8 @@ env:
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
     contact_bodies: []
 
+    visualize_ref_char: True
+
     rand_tar_dir: True
     rand_face_dir: False
     tar_speed_min: 0.5

@@ -23,7 +23,9 @@ env:
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
     contact_bodies: []
 
-    motion_file: "data/motions/g1/g1_spinkick.pkl"
+    visualize_ref_char: False
+
+    motion_file: "data/motions/g1/g1_backflip.pkl"
 
     joint_err_w: [1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5]
  

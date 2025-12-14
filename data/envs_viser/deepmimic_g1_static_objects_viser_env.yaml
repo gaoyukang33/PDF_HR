@@ -24,6 +24,8 @@ env:
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
     contact_bodies: []
     
+    visualize_ref_char: True
+
     # motion_file: "data/motions/g1/g1_double_kong.pkl"
     # objects: [{"pos":[-6.53, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}, {"pos":[-7.62, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}]
     

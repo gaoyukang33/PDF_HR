@@ -20,6 +20,8 @@ env:
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
     contact_bodies: []
     
+    visualize_ref_char: True
+
     tar_speed: 1.0
     tar_change_time_min: 5.0
     tar_change_time_max: 10.0
