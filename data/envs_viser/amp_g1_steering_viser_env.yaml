@@ -62,4 +62,4 @@ viser_cam:
     cam_resolution: [1080, 1080]
     cam_delta: [0.35, -1.1, 1.0]
     cam_toward_delta: [0.0, 0.0, 0.8]
-    viser_cam_mode: 1   # 0: user, 1: track, 2: sync(ref centered)
+    viser_cam_mode: 0   # 0: user, 1: track, 2: sync(ref centered)
