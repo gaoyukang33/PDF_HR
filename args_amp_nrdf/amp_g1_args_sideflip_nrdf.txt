@@ -1,0 +1,8 @@
+--num_envs 4096
+
+--env_config data/envs_amp_nrdf/amp_g1_env_sideflip_nrdf.yaml
+--agent_config data/agents_nrdf/amp_g1_agent.yaml
+
+--log_file output_amp_sideflip_nrdf_1/log.txt
+--out_model_file output_amp_sideflip_nrdf_1/model.pt
+--int_output_dir output_amp_sideflip_nrdf_1/int_output_dir

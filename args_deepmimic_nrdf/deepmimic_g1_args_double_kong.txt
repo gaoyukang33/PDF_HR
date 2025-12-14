@@ -1,8 +1,0 @@
---num_envs 4096
-
---env_config data/envs_deepmimic_nrdf/deepmimic_g1_env_double_kong.yaml
---agent_config data/agents/deepmimic_g1_ppo_agent.yaml
-
---log_file output_deepmimic_double_kong_nrdf/log.txt
---out_model_file output_deepmimic_double_kong_nrdf/model.pt
---int_output_dir output_deepmimic_double_kong_nrdf/int_output_dir
