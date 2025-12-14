@@ -66,6 +66,9 @@ def build_env(env_file, num_envs, device, visualize):
     elif ('record' in env_name):
         import envs.record_env as record_env
         env = record_env.RecordEnvBuilder(env_name, config=env_config, num_envs=num_envs, device=device, visualize=visualize)
+    elif ('viser' in env_name):
+        import envs.viser_env as viser_env
+        env = viser_env.ViserEnvBuilder(env_name, config=env_config, num_envs=num_envs, device=device, visualize=visualize)
     else:
         assert(False), "Unsupported env: {}".format(env_name)
 

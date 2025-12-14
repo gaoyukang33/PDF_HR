@@ -9,7 +9,6 @@ import envs.task_steering_env as task_steering_env
 
 from envs.char_env import CameraMode
 import engines.engine as engine
-import util.torch_util as torch_util
 from scipy.spatial.transform import Rotation as R
 import pickle
 

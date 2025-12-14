@@ -1,4 +1,4 @@
-env_name: "task_location_record"
+env_name: "task_location_viser"
 
 env:
     char_file: "data/assets/g1/g1.xml"
@@ -16,9 +16,9 @@ env:
     ref_char_offset: [2.0, 0.0, 0.0] # m
     init_pose: [0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0]
 
-    enable_early_termination: True
+    enable_early_termination: False
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
-    contact_bodies: ["left_knee_link", "left_ankle_pitch_link", "left_ankle_roll_link", "right_knee_link", "right_ankle_pitch_link", "right_ankle_roll_link"]
+    contact_bodies: []
     
     tar_speed: 1.0
     tar_change_time_min: 5.0
@@ -39,22 +39,9 @@ env:
     reward_root_vel_scale: 1.0
     reward_key_pos_scale: 10.0
 
-    record_config:
-        record_frame_path: "record_engine/test"
-        record_resolution: [1080, 1080]
-        record_cam_mode: 1   # 0: still, 1: track
-        record_cam_delta: [0.35, -1.1, 1.0]
-        record_cam_toward_delta: [0.0, 0.0, 0.8]
-        light_color : [0.6, 0.6, 0.6]
-        light_ambient : [0.8, 0.8, 0.8]
-        bg_objects: [{"pos":[-200.0, 0.0, 50.0], "file":"data/assets/objects/bg_box.xml"},
-                     {"pos":[0.0, 200.0, 50.0], "file":"data/assets/objects/bg_box.xml"}]
-        record_motion_pkl: False
-        record_motion_img: False
-
 
 engine:
-    engine_name: "isaac_gym"
+    engine_name: "isaac_gym_viser"
     
     control_mode: "pos"
     control_freq: 30
@@ -62,3 +49,10 @@ engine:
     env_spacing: 5
     
     ground_contact_height: 0.3
+
+
+viser_cam:
+    cam_resolution: [1080, 1080]
+    cam_delta: [0.35, -1.1, 1.0]
+    cam_toward_delta: [0.0, 0.0, 0.8]
+    viser_cam_mode: 1   # 0: user, 1: track, 2: sync(ref centered)

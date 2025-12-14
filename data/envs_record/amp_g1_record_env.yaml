@@ -37,6 +37,19 @@ env:
     reward_root_vel_scale: 1.0
     reward_key_pos_scale: 10.0
 
+    record_config:
+        record_frame_path: "record_engine/test"
+        record_resolution: [1080, 1080]
+        record_cam_mode: 1   # 0: still, 1: track
+        record_cam_delta: [0.35, -1.1, 1.0]
+        record_cam_toward_delta: [0.0, 0.0, 0.8]
+        light_color : [0.6, 0.6, 0.6]
+        light_ambient : [0.8, 0.8, 0.8]
+        bg_objects: [{"pos":[-200.0, 0.0, 50.0], "file":"data/assets/objects/bg_box.xml"},
+                     {"pos":[0.0, 200.0, 50.0], "file":"data/assets/objects/bg_box.xml"}]
+        record_motion_pkl: False
+        record_motion_img: False
+
 
 engine:
     engine_name: "isaac_gym"

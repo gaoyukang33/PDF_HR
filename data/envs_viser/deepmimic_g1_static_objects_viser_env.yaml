@@ -1,4 +1,4 @@
-env_name: "deepmimic_record"
+env_name: "static_objects_viser"
 
 env:
     char_file: "data/assets/g1/g1.xml"
@@ -7,7 +7,8 @@ env:
     episode_length: 10.0 # seconds
     global_obs: True
     root_height_obs: True
-    pose_termination: False
+    pose_termination: True
+    pose_termination_dist: 0.5 # m
     enable_phase_obs: False
     enable_tar_obs: True
     num_phase_encoding: 4
@@ -16,17 +17,19 @@ env:
     zero_center_action: True
     log_tracking_error: True
 
-    ref_char_offset: [3.0, 0.0, 0.0] # m
+    ref_char_offset: [0.0, 2.0, 0.0] # m
     init_pose: [0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0, 0, 0, 0, 1.57, 0, 0, 0]
 
-    enable_early_termination: True
+    enable_early_termination: False
     key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "head_link", "left_wrist_yaw_link", "right_wrist_yaw_link"]
     contact_bodies: []
-
-    motion_file: "data/motions/g1/g1_walk.pkl"
-
-    joint_err_w: [1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.6, 0.5, 0.5, 0.5]
- 
+    
+    # motion_file: "data/motions/g1/g1_double_kong.pkl"
+    # objects: [{"pos":[-6.53, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}, {"pos":[-7.62, 0.06, 0.14], "file":"data/assets/objects/vault_box.xml"}]
+    
+    motion_file: "data/motions/g1/g1_speed_vault.pkl"
+    objects: [{"pos":[1.7, 0.5, 0.055], "file":"data/assets/objects/vault_box.xml"}]
+    
     reward_pose_w: 0.5
     reward_vel_w: 0.1
     reward_root_pose_w: 0.15
@@ -39,22 +42,9 @@ env:
     reward_root_vel_scale: 1.0
     reward_key_pos_scale: 10.0
 
-    record_config:
-        record_frame_path: "record_engine/test"
-        record_resolution: [1080, 1080]
-        record_cam_mode: 1   # 0: still, 1: track
-        record_cam_delta: [0.35, -1.1, 1.0]
-        record_cam_toward_delta: [0.0, 0.0, 0.8]
-        light_color : [0.6, 0.6, 0.6]
-        light_ambient : [0.8, 0.8, 0.8]
-        bg_objects: [{"pos":[-200.0, 0.0, 50.0], "file":"data/assets/objects/bg_box.xml"},
-                     {"pos":[0.0, 200.0, 50.0], "file":"data/assets/objects/bg_box.xml"}]
-        record_motion_pkl: False
-        record_motion_img: False
-
 
 engine:
-    engine_name: "isaac_gym"
+    engine_name: "isaac_gym_viser"
     
     control_mode: "pos"
     control_freq: 30
@@ -62,3 +52,10 @@ engine:
     env_spacing: 5
     
     ground_contact_height: 0.3
+
+
+viser_cam:
+    cam_resolution: [1080, 1080]
+    cam_delta: [0.35, -1.1, 1.0]
+    cam_toward_delta: [0.0, 0.0, 0.8]
+    viser_cam_mode: 1   # 0: user, 1: track, 2: sync(ref centered)
