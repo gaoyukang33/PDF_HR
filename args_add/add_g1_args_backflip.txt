@@ -1,8 +1,0 @@
---num_envs 4096
-
---env_config data/envs_add/add_g1_backflip_env.yaml
---agent_config data/agents/add_g1_agent.yaml
-
---log_file output_add_backflip_3/log.txt
---out_model_file output_add_backflip_3/model.pt
---int_output_dir output_add_backflip_3/int_output_dir

@@ -1,8 +1,0 @@
---num_envs 4096
-
---env_config data/envs_deepmimic/deepmimic_g1_dancespin_env.yaml
---agent_config data/agents/deepmimic_g1_ppo_agent.yaml
-
---log_file output_deepmimic_dancespin_3/log.txt
---out_model_file output_deepmimic_dancespin_3/model.pt
---int_output_dir output_deepmimic_dancespin_3/int_output_dir

@@ -282,7 +282,7 @@ class DeepMimicEnv(char_env.CharEnv):
         super()._build_data_buffers()
 
         if (self._log_tracking_error):
-            num_track_errors = 7
+            num_track_errors = 8
             self._error_tracker = stats_tracker.StatsTracker(num_track_errors, device=self._device)
 
         return
@@ -565,6 +565,7 @@ class DeepMimicEnv(char_env.CharEnv):
             self._diagnostics["dof_vel_err"] = err_stats[4]
             self._diagnostics["root_vel_err"] = err_stats[5]
             self._diagnostics["root_ang_vel_err"] = err_stats[6]
+            self._diagnostics["body_local_rot_err"] = err_stats[7]
 
         return
     
@@ -869,6 +870,14 @@ def compute_tracking_error(root_pos, root_rot, body_rot, body_pos,
     body_rot_err = torch.abs(body_rot_diff)
     body_rot_err = torch.mean(body_rot_err, dim=-1)
 
+    inv_root_rot     = torch_util.quat_conjugate(root_rot).unsqueeze(-2)
+    inv_root_rot = torch.repeat_interleave(inv_root_rot, body_rot.shape[1], dim=1)
+    inv_tar_root_rot = torch_util.quat_conjugate(tar_root_rot).unsqueeze(-2)
+    inv_tar_root_rot = torch.repeat_interleave(inv_tar_root_rot, tar_body_rot.shape[1], dim=1)
+    body_rot_local     = torch_util.quat_mul(inv_root_rot, body_rot)         # world -> root frame
+    tar_body_rot_local = torch_util.quat_mul(inv_tar_root_rot, tar_body_rot)
+    body_local_rot_err = torch_util.quat_diff_angle(body_rot_local, tar_body_rot_local).abs().mean(dim=-1)
+
     body_pos_diff = tar_body_pos - body_pos
     body_pos_diff_l2 = torch.linalg.vector_norm(body_pos_diff, dim=-1)
     body_pos_err = torch.mean(body_pos_diff_l2, dim=-1)
@@ -885,5 +894,6 @@ def compute_tracking_error(root_pos, root_rot, body_rot, body_pos,
     root_ang_vel_diff = tar_root_ang_vel - root_ang_vel
     root_ang_vel_err = torch.mean(torch.abs(root_ang_vel_diff), dim=-1)
 
-    tracking_error = torch.stack([root_pos_err, root_rot_err, body_pos_err, body_rot_err, dof_vel_err, root_vel_err, root_ang_vel_err], dim=-1)
+    # tracking_error = torch.stack([root_pos_err, root_rot_err, body_pos_err, body_rot_err, dof_vel_err, root_vel_err, root_ang_vel_err], dim=-1)
+    tracking_error = torch.stack([root_pos_err, root_rot_err, body_pos_err, body_rot_err, dof_vel_err, root_vel_err, root_ang_vel_err, body_local_rot_err], dim=-1)
     return tracking_error

@@ -1,5 +1,5 @@
 *.pyc
-
+*.pt
 .vs/
 __pycache__/
 output*/
@@ -9,3 +9,6 @@ wandb/
 record*/
 model.pt
 experiments/
+retarget_ours.sh
+retarget.sh
+DanceDB_Mimickit/

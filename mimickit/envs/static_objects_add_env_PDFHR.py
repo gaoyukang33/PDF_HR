@@ -1,0 +1,36 @@
+import envs.add_env_PDFHR as add_env_PDFHR
+import engines.engine as engine
+import numpy as np
+
+class StaticObjectsEnv(add_env_PDFHR.ADDEnv):
+    def __init__(self, config, num_envs, device, visualize):
+        super().__init__(config=config, num_envs=num_envs, device=device, visualize=visualize)
+        return
+    
+    def _build_env(self, env_id, config):
+        super()._build_env(env_id, config)
+        self._build_static_object(env_id, config)
+        return
+    
+    def _build_static_object(self, env_id, config):
+        color = np.array([0.3, 0.3, 0.3])
+        objs_config = config["env"]["objects"]
+
+        for i, obj_config in enumerate(objs_config):
+            asset_file = obj_config["file"]
+            pos = obj_config["pos"]
+            rot = obj_config.get("rot", [0.0, 0.0, 0.0, 1.0])
+
+            pos = np.array(pos)
+            rot = np.array(rot)
+
+            obj_name = "static_object{:d}".format(i)
+            self._engine.create_obj(env_id=env_id,
+                                    obj_type=engine.ObjType.rigid,
+                                    asset_file=asset_file,
+                                    name=obj_name,
+                                    start_pos=pos,
+                                    start_rot=rot,
+                                    fix_root=True,
+                                    color=color)
+        return

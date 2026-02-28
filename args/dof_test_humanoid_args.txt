@@ -1,6 +1,0 @@
---num_envs 4
-
---env_config data/envs/dof_test_humanoid_env.yaml
-
---log_file output/log.txt
---out_model_file output/model.pt

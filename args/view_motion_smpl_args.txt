@@ -1,7 +1,0 @@
---mode test
---num_envs 4
-
---env_config data/envs/view_motion_smpl_env.yaml
-
---log_file output/log.txt
---out_model_file output/model.pt

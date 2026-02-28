@@ -6,6 +6,7 @@ import envs.static_objects_amp_env as static_objects_amp_env
 import envs.static_objects_add_env as static_objects_add_env
 import envs.task_location_env as task_location_env
 import envs.task_steering_env as task_steering_env
+import engines.engine_builder as engine_builder
 
 import util.torch_util as torch_util
 
@@ -97,13 +98,116 @@ class ViserMixin:
         self.viser_robot_urdf = yourdfpy.URDF.load("data/assets/viser_g1/g1_29dof_rev_1_0.urdf", mesh_dir="data/assets/viser_g1/meshes")
         self.viser_ref_robot_urdf = yourdfpy.URDF.load("data/assets/viser_g1/g1_29dof_rev_1_0_colored.urdf", mesh_dir="data/assets/viser_g1/meshes")
         self.server.scene.set_up_direction("+z")
-        self.server.scene.add_grid(
+
+        box_size = 100
+        ground_grid = self.server.scene.add_grid(
             "/grid",
-            width=20,
-            height=20,
-            position=(0.0, 0.0, 0.0),
-            plane="xy"
+            width=box_size,
+            height=box_size,
+            position=(0.0, 0.0, 0.01),
+            cell_size=1,
+            cell_thickness=2,
+            section_size=1,
+            plane="xy",
+            shadow_opacity=0.5
         )
+
+        grid_shadow_slider = self.server.gui.add_slider(
+            label="Grid shadow",
+            initial_value=0.5,
+            min=0,
+            max=1,
+            step=0.1
+        )
+
+        @grid_shadow_slider.on_update
+        def _(event):
+            ground_grid.shadow_opacity = grid_shadow_slider.value
+
+        grid_thickness_slider = self.server.gui.add_slider(
+            label="Grid thickness",
+            initial_value=1,
+            min=0.5,
+            max=5,
+            step=0.1
+        )
+
+        @grid_thickness_slider.on_update
+        def _(event):
+            ground_grid.cell_thickness = grid_thickness_slider.value
+            ground_grid.section_thickness = grid_thickness_slider.value
+
+
+        grid_size_slider = self.server.gui.add_slider(
+            label="Grid size",
+            initial_value=1,
+            min=0.5,
+            max=5,
+            step=0.1
+        )
+
+        @grid_size_slider.on_update
+        def _(event):
+            ground_grid.cell_size = grid_size_slider.value
+            ground_grid.section_size = grid_size_slider.value
+            
+        grid_color_picker = self.server.gui.add_rgb(
+            label="Grid color",
+            initial_value=(255, 255, 255),  # RGB 0–255
+        )
+
+        @grid_color_picker.on_update
+        def _(event):
+            # event.value is (r, g, b)
+            ground_grid.cell_color = grid_color_picker.value
+            ground_grid.section_color = grid_color_picker.value
+
+        bg_box = self.server.scene.add_box(
+            name="/box",
+            dimensions=(box_size, box_size, box_size),   # (x, y, z) size
+            position=(0.0, 0.0, -box_size//2),     # (x, y, z) location
+            color=(150, 150, 150),        # RGB in 0-255
+            material='standard',  # toon3, toon5, standard (hard for control)
+            side='double',
+            cast_shadow=False,
+            flat_shading=False,
+            receive_shadow=False,
+        )
+
+        # Add a color picker to the GUI
+        bg_box_color_picker = self.server.gui.add_rgb(
+            label="Box color",
+            initial_value=(150, 150, 150),  # RGB 0–255
+        )
+
+        @bg_box_color_picker.on_update
+        def _(event):
+            # event.value is (r, g, b)
+            bg_box.color = bg_box_color_picker.value
+
+        border_length_slider = self.server.gui.add_slider(
+            label="Border length",
+            initial_value=100,
+            min=20,
+            max=1000,
+            step=1
+        )
+
+        @border_length_slider.on_update
+        def _(event):
+            bd_len = border_length_slider.value
+            ground_grid.width = bd_len
+            ground_grid.height = bd_len
+            bg_box.dimensions = (bd_len, bd_len, bd_len)
+            bg_box.position = (0.0, 0.0, -bd_len//2)
+        
+        bg_vis_box = self.server.gui.add_checkbox(
+            label="Visualize backgound box",
+            initial_value=True
+        )
+        @bg_vis_box.on_update
+        def _(event):
+            bg_box.visible = bg_vis_box.value
         self._viser_playing = self.server.gui.add_checkbox("playing", True)
         self._viser_recording = self.server.gui.add_checkbox("recording", False)
         self._viser_ref_robot_instances = []
@@ -378,6 +482,10 @@ class ViserMixin:
                     time.sleep(0.1)
 
         return
+
+    def _build_engine(self, engine_config, num_envs, device, visualize):
+        engine = engine_builder.build_engine(engine_config, num_envs, device, False)
+        return engine
 
     # TODO
     def _save_img(self, client):

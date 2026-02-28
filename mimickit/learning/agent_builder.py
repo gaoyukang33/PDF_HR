@@ -4,10 +4,10 @@ import learning.dummy_agent as dummy_agent
 import learning.ppo_agent as ppo_agent
 import learning.awr_agent as awr_agent
 import learning.amp_agent as amp_agent
-import learning.amp_agent_nrdf as amp_agent_nrdf
+import learning.amp_agent_PDFHR as amp_agent_PDFHR
 import learning.ase_agent as ase_agent
 import learning.add_agent as add_agent
-import learning.add_agent_nrdf as add_agent_nrdf
+import learning.add_agent_PDFHR as add_agent_PDFHR
 
 from util.logger import Logger
 
@@ -28,14 +28,14 @@ def build_agent(agent_file, env, device):
         agent = awr_agent.AWRAgent(config=agent_config, env=env, device=device)
     elif (agent_name == amp_agent.AMPAgent.NAME):
         agent = amp_agent.AMPAgent(config=agent_config, env=env, device=device)
-    elif (agent_name == amp_agent_nrdf.AMPAgent.NAME):
-        agent = amp_agent_nrdf.AMPAgent(config=agent_config, env=env, device=device)
+    elif (agent_name == amp_agent_PDFHR.AMPAgent.NAME):
+        agent = amp_agent_PDFHR.AMPAgent(config=agent_config, env=env, device=device)
     elif (agent_name == ase_agent.ASEAgent.NAME):
         agent = ase_agent.ASEAgent(config=agent_config, env=env, device=device)
     elif (agent_name == add_agent.ADDAgent.NAME):
         agent = add_agent.ADDAgent(config=agent_config, env=env, device=device)
-    elif (agent_name == add_agent_nrdf.ADDAgent.NAME):
-        agent = add_agent_nrdf.ADDAgent(config=agent_config, env=env, device=device)
+    elif (agent_name == add_agent_PDFHR.ADDAgent.NAME):
+        agent = add_agent_PDFHR.ADDAgent(config=agent_config, env=env, device=device)
     else:
         assert(False), "Unsupported agent: {}".format(agent_name)
 

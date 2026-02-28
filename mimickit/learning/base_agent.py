@@ -82,7 +82,7 @@ class BaseAgent(torch.nn.Module):
 
         return
 
-    def test_model(self, num_episodes):
+    def test_model(self, num_episodes, print_error=False):
         self.eval()
         self.set_mode(AgentMode.TEST)
         
@@ -92,6 +92,14 @@ class BaseAgent(torch.nn.Module):
         with torch.no_grad():
             self._curr_obs, self._curr_info = self._reset_envs()
             test_info = self._rollout_test(num_eps_proc)
+
+        if print_error:
+            env_diag_info = self._env.get_diagnostics()
+            for k, v in env_diag_info.items():
+                val_name = k.title()
+                if torch.is_tensor(v):
+                    v = v.item()
+                Logger.print(f"{val_name}: {v}")
 
         return test_info
     

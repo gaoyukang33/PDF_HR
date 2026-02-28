@@ -46,7 +46,7 @@ def train(agent, max_samples, out_model_file, int_output_dir, logger_type, log_f
     return
 
 def test(agent, test_episodes):
-    result = agent.test_model(num_episodes=test_episodes)
+    result = agent.test_model(num_episodes=test_episodes, print_error=True)
     Logger.print("Mean Return: {}".format(result["mean_return"]))
     Logger.print("Mean Episode Length: {}".format(result["mean_ep_len"]))
     Logger.print("Episodes: {}".format(result["num_eps"]))
@@ -128,8 +128,9 @@ def main(argv):
     root_rank = 0
     args = load_args(argv)
     master_port = args.parse_int("master_port", None)
-    num_workers = args.parse_int("num_workers", 1)
-    device = args.parse_string("device", "cuda:0")
+    devices = args.parse_strings("devices", ["cuda:0"])
+    
+    num_workers = len(devices)
     assert(num_workers > 0)
     
     # if master port is not specified, then pick a random one
@@ -139,24 +140,15 @@ def main(argv):
     torch.multiprocessing.set_start_method("spawn")
 
     processes = []
-    for i in range(num_workers - 1):
-        rank = i + 1
-        if ("cuda" in device):
-            curr_device = "cuda:" + str(rank)
-        else:
-            curr_device = device
-
+    for rank in range(1, num_workers):
+        curr_device = devices[rank]
         proc = torch.multiprocessing.Process(target=run, args=[rank, num_workers, curr_device, master_port, args])
         proc.start()
         processes.append(proc)
 
     
-    if (num_workers > 1 and "cuda" in device):
-        curr_device = "cuda:" + str(root_rank)
-    else:
-        curr_device = device
-    
-    run(root_rank, num_workers, curr_device, master_port, args)
+    root_device = devices[0]
+    run(root_rank, num_workers, root_device, master_port, args)
 
     for proc in processes:
         proc.join()

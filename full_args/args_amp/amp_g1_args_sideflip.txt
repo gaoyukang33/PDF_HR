@@ -1,0 +1,8 @@
+--num_envs 4096
+
+--env_config data/full_envs/envs_amp/amp_g1_sideflip_env.yaml
+--agent_config data/agents/amp_g1_agent.yaml
+
+--log_file output_amp_sideflip_3/log.txt
+--out_model_file output_amp_sideflip_3/model.pt
+--int_output_dir output_amp_sideflip_3/int_output_dir

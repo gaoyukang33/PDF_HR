@@ -1,4 +1,5 @@
 import re as RE
+from util.logger import Logger
 
 class ArgParser(object):
     global_parser = None
@@ -57,7 +58,7 @@ class ArgParser(object):
             arg_file = self.parse_string(arg_file_key, '')
             if (arg_file != ''):
                 succ = self.load_file(arg_file)
-                assert succ, Logger.print('Failed to load args from: ' + arg_file)
+                assert succ, Logger.print("Failed to load args from: " + arg_file)
         return succ
 
     def has_key(self, key):

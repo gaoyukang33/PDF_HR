@@ -1,7 +1,0 @@
---num_envs 4096
-
---env_config data/envs/amp_smpl_env.yaml
---agent_config data/agents/amp_smpl_agent.yaml
-
---log_file output/log.txt
---out_model_file output/model.pt
