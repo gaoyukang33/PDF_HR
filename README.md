@@ -62,6 +62,9 @@ Download the assets and precomputed data from [here](https://drive.google.com/dr
 precomputed_data/
 └── sampling_pose_L1.pt
 
+prior_ckpts/
+└──PDFHR_epoch50.pt
+
 data/
 ├── assets/
 │   └── g1/
