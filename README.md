@@ -59,17 +59,16 @@ pip install -r requirements.txt
 
 Download the assets and precomputed data from [here](https://drive.google.com/drive/folders/1o1CqwYTmlNwtccKglNEZ39PpUnyfrntn?usp=sharing), and then extract the files to the following structure:
 ```bash
-precomputed_data/
-└── sampling_pose_L1.pt
-
-prior_ckpts/
-└──PDFHR_epoch50.pt
-
-data/
-├── assets/
-│   └── g1/
-└── motions/
-    └── g1/
+PDF-HR/
+├── precomputed_data/
+│   └── sampling_pose_L1.pt
+├── prior_ckpts/
+│   └── PDFHR_epoch50.pt
+└── data/
+    ├── assets/
+    │   └── g1/
+    └── motions/
+        └── g1/
 ```
 
 # PDF-HR Training 
