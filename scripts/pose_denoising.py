@@ -167,7 +167,18 @@ def run_projection_demo(urdf_path: str, model_path: str):
     print(f"Loading PDFHR Model from {model_path}...")
     pose_model = PDFHR_Adapter(device=device).to(device)
     ckpt = torch.load(model_path, map_location=device)
-    pose_model.load_state_dict(ckpt['model'] if 'model' in ckpt else ckpt)
+    state_dict = ckpt['model'] if 'model' in ckpt else ckpt
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        new_key = key.replace("dfnet.lin0", "dfnet.layers.0")
+        new_key = new_key.replace("dfnet.lin1", "dfnet.layers.1")
+        new_key = new_key.replace("dfnet.lin2", "dfnet.layers.2")
+        new_key = new_key.replace("dfnet.lin3", "dfnet.layers.3")
+        new_state_dict[new_key] = value
+
+    pose_model.load_state_dict(new_state_dict)
+
+    
     pose_model.eval() 
 
     num_steps = 200 
@@ -251,13 +262,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--urdf_path", 
         type=str, 
-        default="your_urdf_path.urdf", 
+        default="../data/assets/g1_29dof_rev_1_0.urdf", 
         help="Path to the URDF file"
     )
     parser.add_argument(
         "--model_path", 
         type=str, 
-        default="prior_ckpts/PDFHR_epoch50.pt", 
+        default="../prior_ckpts/PDFHR_epoch50.pt", 
         help="Path to the model checkpoint"
     )
     
