@@ -22,17 +22,15 @@ This repo covers the core PDF-HR model and its integration pipelines across dive
 
 - [x] Release PDF-HR checkpoint
 - [x] Release PDF-HR quick demo for pose denoising
-- [ ] Release PDF-HR training pipeline
 - [ ] Release Motion tracking with PDF-HR training pipeline
-- [ ] Release Motion retargeting with PDF-HR pipeline
+- [ ] Release PDF-HR training pipeline
+
 
 
 
 # Installation
 
-PDF-HR codebase is built on [Mimickit](https://github.com/xbpeng/MimicKit), which provides a suite of motion imitation methods for training motion controllers. 
 
-## Setup
 
 First create your conda environment:
 
@@ -63,8 +61,14 @@ PDF_HR/
 
 To run the demo, simply execute the following command:
 ```
-python PDF_HR/scripts/pose_denoising.py --urdf_path PDF_HR/data/assets/g1 --model_path PDF_HR/prior_ckpts/PDFHR_epoch50.pt
+python pose_denoising.py 
 ```
+
+# Acknowledgements
+
+This codebase is built upon [MimicKit](https://github.com/xbpeng/MimicKit), which provides a comprehensive suite of motion imitation methods for training humanoid motion controllers. 
+
+We would also like to express our gratitude to the creators of [Viser](https://viser.studio/main/) for providing the powerful visualization tools used throughout this project.
 
 # License
 
