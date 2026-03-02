@@ -11,3 +11,5 @@ model.pt
 experiments/
 retarget_ours.sh
 retarget.sh
+data/assets/
+prior_ckpts/

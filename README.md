@@ -63,7 +63,7 @@ PDF_HR/
 
 To run the demo, simply execute the following command:
 ```
-python PDF_HR/scripts/pose_denoising.py --urdf_path PDF_HR/data/assets/g1 --model_path PDF_HR/prior_ckpts/
+python PDF_HR/scripts/pose_denoising.py --urdf_path PDF_HR/data/assets/g1 --model_path PDF_HR/prior_ckpts/PDFHR_epoch50.pt
 ```
 
 # License
