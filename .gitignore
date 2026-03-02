@@ -11,4 +11,3 @@ model.pt
 experiments/
 retarget_ours.sh
 retarget.sh
-DanceDB_Mimickit/

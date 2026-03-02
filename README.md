@@ -21,8 +21,9 @@ This repo covers the core PDF-HR model and its integration pipelines across dive
 ## TODO
 
 - [x] Release PDF-HR checkpoint
-- [x] Release PDF-HR training pipeline
-- [x] Release Motion tracking with PDF-HR training pipeline
+- [x] Release PDF-HR quick demo for pose denoising
+- [ ] Release PDF-HR training pipeline
+- [ ] Release Motion tracking with PDF-HR training pipeline
 - [ ] Release Motion retargeting with PDF-HR pipeline
 
 
@@ -40,15 +41,6 @@ conda create -n pdfhr python=3.8.20 -y
 conda activate pdfhr
 ```
 
-Download Isaac Gym by following the [installation guide](https://developer.nvidia.com/isaac-gym).
-
-Install IsaacGym Python API:
-
-```bash
-pip install -e isaacgym/python
-```
-
-
 After that, install the requirements:
 ```
 pip install -r requirements.txt
@@ -59,122 +51,26 @@ pip install -r requirements.txt
 
 Download the assets and precomputed data from [here](https://drive.google.com/drive/folders/1o1CqwYTmlNwtccKglNEZ39PpUnyfrntn?usp=sharing), and then extract the files to the following structure:
 ```bash
-PDF-HR/
-├── precomputed_data/
-│   └── sampling_pose_L1.pt
+PDF_HR/
 ├── prior_ckpts/
 │   └── PDFHR_epoch50.pt
 └── data/
-    ├── assets/
-    │   └── g1/
-    └── motions/
+    └── assets/
         └── g1/
 ```
-
-# PDF-HR Training 
-
-An efficient PyTorch training script for the MLP (`PDFHR_Adapter`). By leveraging memory mapping (`mmap=True`),  it trains directly from massive `.pt` files while keeping RAM usage low.
-
-## Data Format Requirements
-
-To ensure memory mapping works correctly, the input `.pt` file must contain raw `torch.Tensor` objects. 
-
-Supported structures:
-* **Dictionary (Recommended):** `{"db": X, "dis": Y}` (Keys can be customized via `--x-key` and `--y-key`).
-* **Tuple/List:** `(X, Y)`
-
-*Note: The first dimension (number of samples, N) of both X and Y must match exactly.*
-
-## Training
-
-Adjust the data path and run the following command to start training:
-
-```bash
-python scripts/train_PDF.py \
-    --data ./precomputed_data/sampling_pose_L1.pt \
-    --batch-size 65536 \
-    --epochs 50 
-```
-
-## Outputs
-
-* Checkpoints are automatically saved to `../prior_ckpts` (customizable via `--ckpt-dir`). 
-
-
-# Motion Tracking Training
-
-To train a motion tracker with PDF-HR, run the following command:
-```
-./run.sh 1 full_args/args_deepmimic_PDFHR/deepmimic_g1_args_backflip_PDFHR.txt
-```
-Parameters description:
-
-- `use_PDFHR_reward`: True  # trigger for PDFHR reward 
-- `reward_PDFHR_dist_w`: 0.2 # trigger for PDFHR reward 
-- `reward_PDFHR_dist_scale`: 1.0
-- `reward_PDFHR_mode`: "static"  # static or dynamic
-- `reward_PDFHR_tolerance`: 0.05
-- `PDFHR_model_path`: "prior_ckpts/PDFHR_epoch50.pt"
-- `use_PDFHR_early_termination`: False  # default as False
-- `PDFHR_et_threshold`: 0.4
-
-## Distributed Training
-To use distributed training with multi-GPU (CUDA:2,3,4,5):
-```
-./run_dist.sh ./full_args/args_add_PDFHR/add_g1_args_backflip_PDFHR.txt 2 3 4 5
-```
-
-
-
-## Testing
-
-We use viser to test the model, avoiding desktop requirement. Run the following command:
-```
-./test.sh 1 $MODEL_FOLDER $MODEL_FILE
-```
-or
-```
-./test.sh 1 $MODEL_FOLDER
-```
-- `MODEL_FILE` specifies the `.pt` file that contains the parameters of the trained model.
-- If no `MODEL_FILE`, directly use `MODEL_FOLDER/model.pt` to infer.
-
-
-<details>
-<summary>To visualize the vault_box, modify the vault_box as visual. Click to expand code for reference.</summary>
-
-```xml
-<?xml version="1.0"?>
-<robot name="vault_box">
-  <link name="object">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.4 2.0 0.6"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.4 2.0 0.6"/>
-      </geometry>
-      <material name="grey">
-        <color rgba="0.3 0.3 0.3 1.0"/>
-      </material>
-    </visual>
-  </link>
-</robot>
-```
-</details>
 
 # Quick Demo for Pose Denoising
 
 To run the demo, simply execute the following command:
 ```
-python PDF-HR/scripts/pose_denoising.py --urdf_path path/to/your_robot.urdf --model_path path/to/PDFHR_model.pt
+python PDF_HR/scripts/pose_denoising.py --urdf_path PDF_HR/data/assets/g1 --model_path PDF_HR/prior_ckpts/
 ```
-## Citation
+
+# License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+# Citation
 If you find this codebase helpful, please cite:
 ```
 @article{

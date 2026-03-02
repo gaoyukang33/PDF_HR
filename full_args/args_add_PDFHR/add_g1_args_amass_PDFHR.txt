@@ -1,8 +1,0 @@
---num_envs 4096
-
---env_config data/full_envs/envs_add_PDFHR/add_g1_amass_PDFHR_env.yaml
---agent_config data/agents_PDFHR/add_g1_agent.yaml
-
---log_file output_add_amass_PDFHR/log.txt
---out_model_file output_add_amass_PDFHR/model.pt
---int_output_dir output_add_amass_PDFHR/int_output_dir
