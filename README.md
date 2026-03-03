@@ -58,6 +58,11 @@ PDF_HR/
 
 # Quick Demo for Pose Denoising
 
+<p align="center">
+  <img src="https://github.com/gaoyukang33/PDF_HR/blob/main/imgs/pose_denoising.gif?raw=true" width="45%" />
+  <img src="https://github.com/gaoyukang33/PDF_HR/blob/main/imgs/pose_denosing_1.gif?raw=true" width="45%" />
+</p>
+
 To run the demo, simply execute the following command:
 ```
 python pose_denoising.py 
