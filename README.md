@@ -54,7 +54,6 @@ PDF_HR/
 │   └── PDFHR_epoch50.pt
 └── data/
     └── assets/
-        └── g1/
 ```
 
 # Quick Demo for Pose Denoising
