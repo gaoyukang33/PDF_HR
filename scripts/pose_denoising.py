@@ -181,7 +181,7 @@ def run_projection_demo(urdf_path: str, model_path: str):
     
     pose_model.eval() 
 
-    num_steps = 200 
+    num_steps = 500 
     record_interval = 1
     
     _, _, _, pose_sequence = project_random_pose_to_manifold(
@@ -262,7 +262,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--urdf_path", 
         type=str, 
-        default="../data/assets/g1/g1_29dof_rev_1_0.urdf", 
+        default="../data/assets/g1_29dof_rev_1_0.urdf", 
         help="Path to the URDF file"
     )
     parser.add_argument(
