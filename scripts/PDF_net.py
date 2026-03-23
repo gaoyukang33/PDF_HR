@@ -43,7 +43,6 @@ def get_g1_parent_mapping():
     mapping[28] = 27
 
     return ",".join([str(x) for x in mapping])
-
 class DFNet(nn.Module):
     def __init__(self, opt, batch_size=4, use_gpu=0, layer='UpperClothes', weight_norm=True, activation='relu', dropout=0.3, output_layer=None):
         super().__init__()
@@ -52,9 +51,10 @@ class DFNet(nn.Module):
         output_size = opt['output_size']
         dims = [input_size] + hid_layer + [output_size]
 
-        self.layers = nn.ModuleList([
-            nn.Linear(dims[l], dims[l + 1]) for l in range(len(dims) - 1)
-        ])
+        self.num_layers = len(dims) - 1
+        
+        for l in range(self.num_layers):
+            setattr(self, f"lin{l}", nn.Linear(dims[l], dims[l + 1]))
 
         if opt['act'] == 'lrelu':
             self.actv = nn.LeakyReLU()
@@ -69,9 +69,10 @@ class DFNet(nn.Module):
     def forward(self, p):
         x = p.reshape(p.size(0), -1)
         
-        for l, layer in enumerate(self.layers):
+        for l in range(self.num_layers):
+            layer = getattr(self, f"lin{l}")
             x = layer(x)
-            if l < len(self.layers) - 1:
+            if l < self.num_layers - 1:
                 x = self.actv(x)
 
         return self.out_actv(x)
