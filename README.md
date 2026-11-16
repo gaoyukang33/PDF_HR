@@ -55,7 +55,7 @@ If you find this work useful, please cite:
 
 ```bibtex
 @article{gu2026pdfhr,
-  title   = {PDF-HR: Pose Distance Fields for Humanoid Robots},
+  title   = {Pose Distance Fields for Humanoid Robots},
   author  = {Gu, Yi and Gao, Yukang and Zhou, Yangchen and Chen, Xingyu and Feng, Yixiao and Zhao, Mingle and Mo, Yunyang and Wang, Zhaorui and Xu, Lixin and Xu, Renjing},
   journal = {arXiv preprint arXiv:2602.04851},
   year    = {2026}
